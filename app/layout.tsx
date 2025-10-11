@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -19,6 +19,7 @@ export default function RootLayout({
         <HeroUIProvider>
           <Providers>
             {children}
+            <ToastProvider />
           </Providers>
         </HeroUIProvider>
       </body>

@@ -41,14 +41,14 @@ export function LossesDistribution({
       ]
     : [];
 
-  const barData = lossesData
+  const pieData2 = lossesData
     ? [
         {
-          name: "Calendar Time",
+          name: "VA Operating Time",
           value: lossesData.totCalendarTime,
         },
         {
-          name: "OEE Loss",
+          name: "Losses",
           value: lossesData.totOeeLoss,
         },
       ]
@@ -73,7 +73,58 @@ export function LossesDistribution({
       <Card className="w-full">
         <CardHeader className="flex gap-3">
           <div className="flex flex-col">
-            <p className="text-lg font-bold">Loss Distribution (%)</p>
+            <p className="text-lg font-bold">Calendar Time</p>
+            <p className="text-small text-default-500">
+              Calendar time vs OEE loss
+            </p>
+          </div>
+        </CardHeader>
+        <CardBody>
+          {isLoading ? (
+            <Skeleton className="rounded-lg h-96" />
+          ) : error ? (
+            <ErrorCard />
+          ) : pieData2.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData2}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, value }: any) => {
+                    if (typeof value === "number") {
+                      return `${name}: ${value.toFixed(2)}%`;
+                    }
+                    return name;
+                  }}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center text-gray-500 py-16">
+              No time data available
+            </p>
+          )}
+        </CardBody>
+      </Card>
+
+      <Card className="w-full">
+        <CardHeader className="flex gap-3">
+          <div className="flex flex-col">
+            <p className="text-lg font-bold">OEE Losses (%)</p>
             <p className="text-small text-default-500">
               Breakdown of losses by category
             </p>
@@ -116,38 +167,6 @@ export function LossesDistribution({
           ) : (
             <p className="text-center text-gray-500 py-16">
               No loss data available
-            </p>
-          )}
-        </CardBody>
-      </Card>
-
-      <Card className="w-full">
-        <CardHeader className="flex gap-3">
-          <div className="flex flex-col">
-            <p className="text-lg font-bold">Time Analysis</p>
-            <p className="text-small text-default-500">
-              Calendar time vs OEE loss
-            </p>
-          </div>
-        </CardHeader>
-        <CardBody>
-          {isLoading ? (
-            <Skeleton className="rounded-lg h-96" />
-          ) : error ? (
-            <ErrorCard />
-          ) : barData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#3b82f6" name="Minutes" />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="text-center text-gray-500 py-16">
-              No time data available
             </p>
           )}
         </CardBody>

@@ -12,28 +12,32 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
-// Add response interceptor untuk error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    let message = "";
+
     if (error.response) {
-      console.error("API Error:", {
-        status: error.response.status,
-        data: error.response.data,
-        endpoint: error.config.url,
-      });
+      message = error.response.data?.message || "Server error";
     } else if (error.request) {
-      console.error("No response from API:", error.message);
+      message = "No response from server.";
     } else {
-      console.error("API request error:", error.message);
+      message = error.message;
     }
+
+    // 🚨 tampilkan alert error langsung
+    if (typeof window !== "undefined") {
+      alert(`API Error: ${message}`);
+    } else {
+      console.error("API Error:", message);
+    }
+
     return Promise.reject(error);
   }
 );
 
 export default apiClient;
 
-// Verifikasi base URL di console (untuk debugging)
 if (typeof window !== "undefined") {
   console.log("API Base URL:", API_BASE_URL);
 }

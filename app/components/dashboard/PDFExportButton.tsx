@@ -49,15 +49,15 @@ export function PDFExportButton({
       )}
       <Tooltip content="Download dashboard as PDF">
         <Button
-          isIconOnly
-          color="primary"
-          variant="flat"
+          color="danger"
+          variant="solid"
           onPress={handleExport}
           disabled={isExporting || !areaId}
           isLoading={isExporting}
-          className="rounded-full"
+          startContent={<FileDown className="h-5 w-5" />}
+          className="flex flex-row items-center justify-center gap-2"
         >
-          <FileDown className="h-5 w-5" />
+          Download
         </Button>
       </Tooltip>
     </>

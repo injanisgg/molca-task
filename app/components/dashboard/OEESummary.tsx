@@ -15,26 +15,18 @@ export function OEESummary({ areaId, month, year }: OEESummaryProps) {
 
   const metrics = summary
     ? [
-        { label: "TEEP", value: summary.teep, unit: "%" },
-        { label: "OEE", value: summary.oee, unit: "%" },
-        { label: "Utilization", value: summary.utilization, unit: "%" },
-        { label: "Availability", value: summary.availability, unit: "%" },
-        { label: "Performance", value: summary.performance, unit: "%" },
-        { label: "Quality", value: summary.quality, unit: "%" },
-        { label: "Achievement", value: summary.achivement, unit: "%" },
+        { label: "TEEP", value: summary.teep, unit: "%", color: 'text-emerald-500' },
+        { label: "OEE", value: summary.oee, unit: "%", color: 'text-amber-500' },
+        { label: "Utilization", value: summary.utilization, unit: "%", color: 'text-emerald-500' },
+        { label: "Availability", value: summary.availability, unit: "%", color: 'text-emerald-500' },
+        { label: "Performance", value: summary.performance, unit: "%", color: 'text-emerald-500' },
+        { label: "Quality", value: summary.quality, unit: "%", color: 'text-emerald-500' },
+        { label: "Achievement", value: summary.achivement, unit: "%", color: 'text-blue-500' },
       ]
     : [];
 
   return (
     <Card className="w-full">
-      <CardHeader className="flex gap-3">
-        <div className="flex flex-col">
-          <p className="text-xl font-bold">OEE Summary</p>
-          <p className="text-small text-default-500">
-            Overall Equipment Effectiveness Metrics
-          </p>
-        </div>
-      </CardHeader>
       <CardBody>
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
@@ -59,12 +51,12 @@ export function OEESummary({ areaId, month, year }: OEESummaryProps) {
             {metrics.map((metric) => (
               <div
                 key={metric.label}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 text-center"
+                className="p-4 text-center"
               >
                 <p className="text-sm text-gray-600 font-semibold">
                   {metric.label}
                 </p>
-                <p className="text-3xl font-bold text-blue-600 mt-2">
+                <p className={`text-3xl font-bold ${metric.color} mt-2`}>
                   {metric.value}
                   <span className="text-lg">{metric.unit}</span>
                 </p>

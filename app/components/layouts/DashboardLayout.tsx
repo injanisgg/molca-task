@@ -49,11 +49,7 @@ export function DashboardLayout() {
               </p>
             </div>
             <div className="flex gap-2 items-center flex-shrink-0">
-              <PDFExportButton
-                areaId={selectedArea}
-                month={selectedMonth}
-                year={selectedYear}
-              />
+
             </div>
           </div>
 
@@ -69,26 +65,31 @@ export function DashboardLayout() {
 
           {/* Main Content */}
           {selectedArea ? (
-            <div id="dashboard-content" className="space-y-6">
+            <div id="dashboard-content" className="space-y-3">
               <OEESummary
                 areaId={selectedArea}
                 month={selectedMonth}
                 year={selectedYear}
               />
 
-              <OEETrendChart
-                areaId={selectedArea}
-                month={selectedMonth}
-                year={selectedYear}
-              />
+              <div className="flex flex-col md:flex-row gap-4 mt-3">
+                <div className="w-full md:w-[35%]">
+                  <SixBigLosses
+                    areaId={selectedArea}
+                    month={selectedMonth}
+                    year={selectedYear}
+                  />
+                </div>
+                <div className="w-full md:w-[65%]">
+                  <OEETrendChart
+                    areaId={selectedArea}
+                    month={selectedMonth}
+                    year={selectedYear}
+                  />
+                </div>
+              </div>
 
               <LossesDistribution
-                areaId={selectedArea}
-                month={selectedMonth}
-                year={selectedYear}
-              />
-
-              <SixBigLosses
                 areaId={selectedArea}
                 month={selectedMonth}
                 year={selectedYear}
@@ -111,7 +112,7 @@ export function DashboardLayout() {
           )}
 
           {/* API Documentation */}
-          <APIEndpointsInfo />
+          {/* <APIEndpointsInfo /> */}
         </div>
       </div>
     </ErrorBoundary>
