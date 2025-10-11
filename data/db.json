@@ -1,0 +1,59 @@
+{
+  "areas": [
+    { "id": 1, "name": "Filling Area" },
+    { "id": 2, "name": "Packaging Area" },
+    { "id": 3, "name": "Mixing Area" }
+  ],
+
+  "lines": [
+    { "id": 1, "name": "Line A", "areaId": 1 },
+    { "id": 2, "name": "Line B", "areaId": 1 },
+    { "id": 3, "name": "Line C", "areaId": 2 }
+  ],
+
+  "oees": [
+    { "id": 1, "areaId": 1, "month": 1, "year": 2025, "availability": 90, "performance": 85, "quality": 95, "oee": 72.7 },
+    { "id": 2, "areaId": 2, "month": 1, "year": 2025, "availability": 92, "performance": 80, "quality": 97, "oee": 71.4 },
+    { "id": 3, "areaId": 3, "month": 1, "year": 2025, "availability": 85, "performance": 83, "quality": 96, "oee": 67.8 }
+  ],
+
+  "six-big-losses": [
+    { "id": 1, "areaId": 1, "lossType": "Setup and Adjustment", "lossValue": 12 },
+    { "id": 2, "areaId": 1, "lossType": "Breakdown", "lossValue": 9 },
+    { "id": 3, "areaId": 1, "lossType": "Reduced Speed", "lossValue": 8 },
+    { "id": 4, "areaId": 1, "lossType": "Minor Stop", "lossValue": 5 },
+    { "id": 5, "areaId": 1, "lossType": "Startup Reject", "lossValue": 3 },
+    { "id": 6, "areaId": 1, "lossType": "Process Defect", "lossValue": 2 }
+  ],
+
+  "oees_trend": [
+    { "month": "Jan", "area": "Filling", "oee": 72 },
+    { "month": "Feb", "area": "Filling", "oee": 75 },
+    { "month": "Mar", "area": "Filling", "oee": 78 },
+    { "month": "Apr", "area": "Filling", "oee": 80 }
+  ],
+
+  "losses": [
+    { "id": 1, "areaId": 1, "type": "Downtime", "duration": 120, "description": "Machine breakdown" },
+    { "id": 2, "areaId": 1, "type": "Reduced Speed", "duration": 45, "description": "Operator delay" }
+  ],
+
+  "pareto": [
+    { "id": 1, "areaId": 1, "cause": "Machine Failure", "percentage": 35 },
+    { "id": 2, "areaId": 1, "cause": "Material Shortage", "percentage": 25 },
+    { "id": 3, "areaId": 1, "cause": "Operator Error", "percentage": 20 },
+    { "id": 4, "areaId": 1, "cause": "Quality Issue", "percentage": 15 },
+    { "id": 5, "areaId": 1, "cause": "Other", "percentage": 5 }
+  ],
+
+  "date_metadata": [
+    {
+      "mode": "month",
+      "values": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    },
+    {
+      "mode": "year",
+      "values": [2023, 2024, 2025]
+    }
+  ]
+}
