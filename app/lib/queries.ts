@@ -11,8 +11,20 @@ import type {
   DateMetadata,
 } from "./types";
 
+// === Helper untuk parsing error ===
+function parseAPIError(error: unknown): string {
+  if (error instanceof Error) return error.message;
+
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return (error as { message: string }).message;
+  }
+
+  return "Unknown error occurred";
+}
+
+// === useAreas ===
 export const useAreas = () =>
-  useQuery({
+  useQuery<Area[], Error>({
     queryKey: ["areas"],
     queryFn: async () => {
       try {
@@ -20,15 +32,16 @@ export const useAreas = () =>
           params: { page: 1, limit: 100 },
         });
         return data.data;
-      } catch (error) {
-        console.error("Failed to fetch areas:", error);
+      } catch (error: unknown) {
+        console.error("Failed to fetch areas:", parseAPIError(error));
         throw error;
       }
     },
   });
 
+// === useLines ===
 export const useLines = () =>
-  useQuery({
+  useQuery<Line[], Error>({
     queryKey: ["lines"],
     queryFn: async () => {
       try {
@@ -36,15 +49,16 @@ export const useLines = () =>
           params: { page: 1, limit: 100 },
         });
         return data.data;
-      } catch (error) {
-        console.error("Failed to fetch lines:", error);
+      } catch (error: unknown) {
+        console.error("Failed to fetch lines:", parseAPIError(error));
         throw error;
       }
     },
   });
 
+// === useDateMetadata ===
 export const useDateMetadata = (mode: "month" | "year" = "month") =>
-  useQuery({
+  useQuery<DateMetadata[] | number[], Error>({
     queryKey: ["dateMetadata", mode],
     queryFn: async () => {
       try {
@@ -53,60 +67,27 @@ export const useDateMetadata = (mode: "month" | "year" = "month") =>
           { params: { mode } }
         );
         return data.data;
-      } catch (error) {
-        console.error("Failed to fetch date metadata:", error);
+      } catch (error: unknown) {
+        console.error("Failed to fetch date metadata:", parseAPIError(error));
         throw error;
       }
     },
   });
 
+// === useOEESummary ===
 export const useOEESummary = (areaId: number, month: number, year: number) =>
-  useQuery({
+  useQuery<OEESummary, Error>({
     queryKey: ["oees", areaId, month, year],
     queryFn: async () => {
       try {
-        console.log(
-          `Fetching OEE Summary: areaId=${areaId}, month=${month}, year=${year}`
-        );
         const { data } = await apiClient.get<{ data: OEESummary }>("/oees", {
           params: { areaId, month, year },
         });
-        console.log("OEE Summary response:", data);
         return data.data;
-      } catch (error: any) {
-        console.error("Failed to fetch OEE Summary:", error.response?.data || error.message);
-        throw error;
-      }
-    },
-    enabled: !!areaId,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
-    retry: 1,
-    retryDelay: 1000,
-  });
-
-export const useSixBigLosses = (
-  areaId: number,
-  month: number,
-  year: number
-) =>
-  useQuery({
-    queryKey: ["sixBigLosses", areaId, month, year],
-    queryFn: async () => {
-      try {
-        console.log(
-          `Fetching Six Big Losses: areaId=${areaId}, month=${month}, year=${year}`
-        );
-        const { data } = await apiClient.get<{ data: SixBigLoss[] }>(
-          "/six-big-losses",
-          { params: { areaId, month, year } }
-        );
-        console.log("Six Big Losses response:", data);
-        return data.data;
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(
-          "Failed to fetch Six Big Losses:",
-          error.response?.data || error.message
+          "Failed to fetch OEE Summary:",
+          parseAPIError(error)
         );
         throw error;
       }
@@ -118,29 +99,51 @@ export const useSixBigLosses = (
     retryDelay: 1000,
   });
 
+// === useSixBigLosses ===
+export const useSixBigLosses = (areaId: number, month: number, year: number) =>
+  useQuery<SixBigLoss[], Error>({
+    queryKey: ["sixBigLosses", areaId, month, year],
+    queryFn: async () => {
+      try {
+        const { data } = await apiClient.get<{ data: SixBigLoss[] }>(
+          "/six-big-losses",
+          { params: { areaId, month, year } }
+        );
+        return data.data;
+      } catch (error: unknown) {
+        console.error(
+          "Failed to fetch Six Big Losses:",
+          parseAPIError(error)
+        );
+        throw error;
+      }
+    },
+    enabled: !!areaId,
+    staleTime: 1000 * 60 * 30,
+    gcTime: 1000 * 60 * 60,
+    retry: 1,
+    retryDelay: 1000,
+  });
+
+// === useOEETrend ===
 export const useOEETrend = (
   areaId: number,
   month: number,
   year: number,
   mode: "area" | "line" = "area"
 ) =>
-  useQuery({
+  useQuery<OEETrend[], Error>({
     queryKey: ["oeesTrend", areaId, month, year, mode],
     queryFn: async () => {
       try {
-        console.log(
-          `Fetching OEE Trend: areaId=${areaId}, month=${month}, year=${year}, mode=${mode}`
-        );
-        const { data } = await apiClient.get<{ data: OEETrend[] }>(
-          "/oees/trend",
-          { params: { areaId, month, year, mode } }
-        );
-        console.log("OEE Trend response:", data);
+        const { data } = await apiClient.get<{ data: OEETrend[] }>("/oees/trend", {
+          params: { areaId, month, year, mode },
+        });
         return data.data;
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(
           "Failed to fetch OEE Trend:",
-          error.response?.data || error.message
+          parseAPIError(error)
         );
         throw error;
       }
@@ -152,23 +155,20 @@ export const useOEETrend = (
     retryDelay: 1000,
   });
 
+// === useLosses ===
 export const useLosses = (areaId: number, month: number, year: number) =>
-  useQuery({
+  useQuery<Loss, Error>({
     queryKey: ["losses", areaId, month, year],
     queryFn: async () => {
       try {
-        console.log(
-          `Fetching Losses: areaId=${areaId}, month=${month}, year=${year}`
-        );
         const { data } = await apiClient.get<{ data: Loss }>("/losses", {
           params: { areaId, month, year },
         });
-        console.log("Losses response:", data);
         return data.data;
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(
           "Failed to fetch Losses:",
-          error.response?.data || error.message
+          parseAPIError(error)
         );
         throw error;
       }
@@ -180,29 +180,25 @@ export const useLosses = (areaId: number, month: number, year: number) =>
     retryDelay: 1000,
   });
 
+// === usePareto ===
 export const usePareto = (
   areaId: number,
   month: number,
   year: number,
   kind: "DOWNTIME" | "ACTION" | "SCHEDULE" | "QUALITY"
 ) =>
-  useQuery({
+  useQuery<ParetoItem[], Error>({
     queryKey: ["pareto", areaId, month, year, kind],
     queryFn: async () => {
       try {
-        console.log(
-          `Fetching Pareto: areaId=${areaId}, month=${month}, year=${year}, kind=${kind}`
-        );
-        const { data } = await apiClient.get<{ data: ParetoItem[] }>(
-          "/pareto",
-          { params: { areaId, month, year, kind } }
-        );
-        console.log("Pareto response:", data);
+        const { data } = await apiClient.get<{ data: ParetoItem[] }>("/pareto", {
+          params: { areaId, month, year, kind },
+        });
         return data.data;
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(
           "Failed to fetch Pareto:",
-          error.response?.data || error.message
+          parseAPIError(error)
         );
         throw error;
       }

@@ -14,7 +14,6 @@ import {
 } from "@heroui/react";
 import { useSixBigLosses } from "@/app/lib/queries";
 import { AlertCircle } from "lucide-react";
-import type { SixBigLoss } from "@/app/lib/types";
 
 interface SixBigLossesProps {
   areaId: number;

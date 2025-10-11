@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 export class APIError extends Error {
   constructor(
     public statusCode: number,
@@ -9,16 +11,14 @@ export class APIError extends Error {
   }
 }
 
-export function handleAPIError(error: any): APIError {
-  if (error.response) {
-    return new APIError(
-      error.response.status,
-      error.response.data?.message || error.message || "An error occurred",
-      error.config?.url
-    );
-  } else if (error.request) {
-    return new APIError(0, "No response from server", error.config?.url);
-  } else {
-    return new APIError(0, error.message || "Unknown error occurred");
+export function handleAPIError(error: unknown): APIError {
+  if (error instanceof Error) {
+    return new APIError(0, error.message);
   }
+
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return new APIError(0, (error as { message: string }).message);
+  }
+
+  return new APIError(0, "Unknown error occurred");
 }

@@ -8,9 +8,7 @@ import { SixBigLosses } from "../dashboard/SixBigLosses";
 import { OEETrendChart } from "../dashboard/OEETrendChart";
 import { ParetoCharts } from "../dashboard/ParetoCharts";
 import { LossesDistribution } from "../dashboard/LossesDistribution";
-import { PDFExportButton } from "../dashboard/PDFExportButton";
 import { ErrorBoundary } from "../dashboard/ErrorBoundary";
-import { APIEndpointsInfo } from "../dashboard/APIEndpointsInfo";
 
 export function DashboardLayout() {
   const [selectedArea, setSelectedArea] = useState<number | null>(null);

@@ -8,11 +8,7 @@ import {
   Legend,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  PieLabelRenderProps
 } from "recharts";
 import { useLosses } from "@/app/lib/queries";
 import { AlertCircle } from "lucide-react";
@@ -92,7 +88,7 @@ export function LossesDistribution({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value }: any) => {
+                  label={({ name, value }: PieLabelRenderProps) => {
                     if (typeof value === "number") {
                       return `${name}: ${value.toFixed(2)}%`;
                     }
@@ -143,7 +139,7 @@ export function LossesDistribution({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value }: any) => {
+                  label={({ name, value }: PieLabelRenderProps) => {
                     if (typeof value === "number") {
                       return `${name}: ${value.toFixed(2)}%`;
                     }

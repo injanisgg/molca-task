@@ -1,6 +1,6 @@
 "use client";
 
-import { Select, SelectItem, Button, Card, CardBody } from "@heroui/react";
+import { Select, SelectItem, Card, CardBody } from "@heroui/react";
 import { PDFExportButton } from "./PDFExportButton";
 import { useAreas, useDateMetadata } from "@/app/lib/queries";
 import type { Area, DateMetadata } from "@/app/lib/types";

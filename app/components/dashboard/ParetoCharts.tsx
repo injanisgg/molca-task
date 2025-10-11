@@ -4,7 +4,6 @@ import { Card, CardBody, CardHeader, Skeleton, Tabs, Tab } from "@heroui/react";
 import {
   BarChart,
   Bar,
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -24,6 +23,11 @@ interface ParetoChartsProps {
 
 type ParetoKind = "DOWNTIME" | "ACTION" | "SCHEDULE" | "QUALITY";
 
+interface ParetoRawItem {
+  reason: string;
+  duration: string | number;
+}
+
 interface ParetoChartItem {
   reason: string;
   count: number;
@@ -31,21 +35,26 @@ interface ParetoChartItem {
   cumulativePercent: number;
 }
 
-export function ParetoCharts({
-  areaId,
-  month,
-  year,
-}: ParetoChartsProps) {
-  const kinds: ParetoKind[] = ["DOWNTIME", "ACTION", "SCHEDULE", "QUALITY"];
-  const queries = kinds.map((kind) => ({
-    kind,
-    ...usePareto(areaId, month, year, kind),
-  }));
+export function ParetoCharts({ areaId, month, year }: ParetoChartsProps) {
+  // === Hooks dipanggil di level atas ===
+  const downtime = usePareto(areaId, month, year, "DOWNTIME");
+  const action = usePareto(areaId, month, year, "ACTION");
+  const schedule = usePareto(areaId, month, year, "SCHEDULE");
+  const quality = usePareto(areaId, month, year, "QUALITY");
 
-  const transformToParetoData = (data: any[]): ParetoChartItem[] => {
-    const aggregated: { [key: string]: number } = {};
+  const queries = [
+    { kind: "DOWNTIME" as ParetoKind, ...downtime },
+    { kind: "ACTION" as ParetoKind, ...action },
+    { kind: "SCHEDULE" as ParetoKind, ...schedule },
+    { kind: "QUALITY" as ParetoKind, ...quality },
+  ];
+
+  // === Transform raw data ke Pareto chart data ===
+  const transformToParetoData = (data: ParetoRawItem[]): ParetoChartItem[] => {
+    const aggregated: Record<string, number> = {};
+
     data.forEach((item) => {
-      aggregated[item.reason] = (aggregated[item.reason] || 0) + parseFloat(item.duration);
+      aggregated[item.reason] = (aggregated[item.reason] || 0) + Number(item.duration);
     });
 
     const sorted = Object.entries(aggregated)
@@ -77,11 +86,7 @@ export function ParetoCharts({
         </div>
       </CardHeader>
       <CardBody>
-        <Tabs
-          aria-label="Pareto charts"
-          className="w-full"
-          color="primary"
-        >
+        <Tabs aria-label="Pareto charts" className="w-full" color="primary">
           {queries.map((query) => {
             const paretoData = transformToParetoData(query.data || []);
             return (
@@ -101,11 +106,7 @@ export function ParetoCharts({
                     </div>
                   </div>
                 ) : paretoData.length > 0 ? (
-                  <ResponsiveContainer
-                    width="100%"
-                    height={400}
-                    className="mt-4"
-                  >
+                  <ResponsiveContainer width="100%" height={400} className="mt-4">
                     <BarChart data={paretoData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis

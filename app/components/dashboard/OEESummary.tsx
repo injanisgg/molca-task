@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, CardHeader, Skeleton } from "@heroui/react";
+import { Card, CardBody, Skeleton } from "@heroui/react";
 import { useOEESummary } from "@/app/lib/queries";
 import { AlertCircle } from "lucide-react";
 
